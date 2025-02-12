@@ -1,6 +1,6 @@
 #include "so_long.h"
 
-void    init_window(t_game *game)
+void	init_window(t_game *game)
 {
     game->mlx = mlx_init();
     if (!game->mlx)
