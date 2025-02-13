@@ -60,6 +60,7 @@ static int	ft_validate_row(t_map *m, int row, int *p, int *e, int *c)
 }
 // 3. Counts required elements: one player ('P'), one exit ('E'),
 // and at least one collectible ('C').
+
 static int	ft_validate_map(t_map *m)
 {
 	int		i;
@@ -86,12 +87,3 @@ static int	ft_validate_map(t_map *m)
 	m->collectibles = collectible;
 	return (1);
 }
-
-
-
-// 4. Validates the map by checking rectangularity and required element counts.
-
-// 5. Parses the raw map data string into a t_map structure.
-//    It splits the string into lines, initializes the map struct, and validates the map.
-
-

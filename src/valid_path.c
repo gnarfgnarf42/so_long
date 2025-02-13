@@ -13,7 +13,7 @@
 #include "so_long.h"
 
 // Duplicates the grid. Returns NULL on error.
-static char	**copy_grid(t_map *m)
+static char	**ft_copy_grid(t_map *m)
 {
 	char	**cp;
 	int		i;
@@ -43,34 +43,38 @@ static char	**copy_grid(t_map *m)
 
 // Searches for the player's position in the grid.
 // px and py are set to the coordinates if found; otherwise, they remain -1.
-static void	find_player(char **cp, int height, int width,
-	int *px, int *py)
+static t_point	ft_find_player(t_map *map)
 {
-	int	i;
-	int	j;
+	t_point	p;
+	int		i;
+	int		j;
+	char	**cp;
 
+	cp = map->grid;
+	p.x = -1;
+	p.y = -1;
 	i = 0;
-	*px = -1;
-	*py = -1;
-	while (i < height && *px == -1)
+	while (i < map->height && p.x == -1)
 	{
 		j = 0;
-		while (j < width && *px == -1)
+		while (j < map->width && p.x == -1)
 		{
 			if (cp[i][j] == 'P')
 			{
-				*px = j;
-				*py = i;
+				p.x = j;
+				p.y = i;
 			}
 			j++;
 		}
 		i++;
 	}
+	return (p);
 }
+
 
 // Checks for remaining 'C' or 'E' characters in the grid.
 // Returns 1 if none remain (all are reachable), 0 otherwise.
-static int	check_remaining(char **cp, int height, int width)
+static int	ft_check_remaining(char **cp, int height, int width)
 {
 	int	i;
 	int	j;
@@ -93,7 +97,7 @@ static int	check_remaining(char **cp, int height, int width)
 }
 
 // Frees the duplicated grid.
-static void	free_copy_grid(char **cp, int height)
+static void	ft_free_copy_grid(char **cp, int height)
 {
 	int	i;
 
@@ -110,21 +114,25 @@ static void	free_copy_grid(char **cp, int height)
 static int	valid_path(t_map *m)
 {
 	char	**cp;
-	int		px;
-	int		py;
+	t_map	temp;
+	t_point	p;
 	int		valid;
 
-	cp = copy_grid(m);
+	cp = ft_copy_grid(m);
 	if (cp == NULL)
 		return (0);
-	find_player(cp, m->height, m->width, &px, &py);
-	if (px == -1)
+	temp.grid = cp;
+	temp.height = m->height;
+	temp.width = m->width;
+	p = ft_find_player(&temp);
+	if (p.x == -1)
 		valid = 0;
 	else
 	{
-		flood_fill(cp, px, py, m->height, m->width);
-		valid = check_remaining(cp, m->height, m->width);
+		ft_flood_fill(cp, p.x, p.y, m->height, m->width);
+		valid = ft_check_remaining(cp, m->height, m->width);
 	}
-	free_copy_grid(cp, m->height);
+	ft_free_copy_grid(cp, m->height);
 	return (valid);
 }
+

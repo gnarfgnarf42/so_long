@@ -16,6 +16,29 @@
 
 #define MAP_BUFFER_SIZE 1024
 
+int	ft_arg_check(int argc, char **argv)
+{
+	int	len;
+
+	if (argc != 2)
+	{
+		write(2, "Error\nInvalid number of arguments\n", 34);
+		return (0);
+	}
+	len = ft_strlen(argv[1]);
+	if (len < 4)
+	{
+		write(2, "Error\nFilename too short\n", 25);
+		return (0);
+	}
+	if (ft_strcmp(argv[1] + len - 4, ".ber") != 0)
+	{
+		write(2, "Error\nInvalid file extension. Only .ber files allowed\n", 54);
+		return (0);
+	}
+	return (1);
+}
+
 // Helper function to read from file descriptor
 static char	*ft_append_to_map(char *map_data, char *buffer)
 {
