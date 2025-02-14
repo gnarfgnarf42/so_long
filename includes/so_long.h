@@ -21,6 +21,12 @@
 
 # define TILE_SIZE 64
 
+# define KEY_UP 126
+# define KEY_DOWN 125
+# define KEY_LEFT 123
+# define KEY_RIGHT 124
+# define KEY_ESC 53
+
 typedef struct s_point {
 	int		x;
 	int		y;

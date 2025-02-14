@@ -62,20 +62,4 @@ static void	ft_update_player_position(t_game *game, int new_x, int new_y)
 	game->player.moves = game->player.moves + 1;
 }
 
-int	ft_key_press(int keycode, t_game *game)
-{
-	int	new_x;
-	int	new_y;
 
-	if (keycode == KEY_ESC)
-		ft_close_game(game);
-	ft_compute_new_position(keycode, game, &new_x, &new_y);
-	if (!ft_is_valid_move(game, new_x, new_y))
-		return (0);
-	ft_handle_collectible(game, new_x, new_y);
-	if (!ft_handle_exit(game, new_x, new_y))
-		return (0);
-	ft_update_player_position(game, new_x, new_y);
-	ft_render_map(game);
-	return (0);
-}
