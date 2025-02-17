@@ -5,22 +5,8 @@ NAME = so_long
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -Iincludes
-
-# Platform-specific includes and flags
-ifeq ($(shell uname), Linux)
-    INCLUDES = -I/usr/include -Imlx
-else
-    INCLUDES = -I/opt/X11/include -Imlx
-endif
-
-MLX_DIR = ./mlx
-MLX_LIB = $(MLX_DIR)/libmlx_$(shell uname).a
-ifeq ($(shell uname), Linux)
-    MLX_FLAGS = -Lmlx -lmlx -L/usr/lib/X11 -lXext -lX11
-else
-    MLX_FLAGS = -Lmlx -lmlx -L/usr/X11/lib -lXext -lX11 -framework OpenGL -framework AppKit
-endif
+CFLAGS   = -Wall -Wextra -Werror -I/usr/local/include -Iincludes  -Ilibft/includes
+MLX_FLAGS= -L/usr/local/lib -lmlx -lXext -lX11
 
 LIBFT_DIR = ./libft
 LIBFT_LIB = $(LIBFT_DIR)/libft.a
@@ -31,21 +17,14 @@ OBJDIR = obj
 
 # Source and object files
 SRC = so_long.c \
-	  init_game.c \
-	  update_game.c \
 	  end_game.c \
-	  parse_map.c \
-	  validate_map.c \
-	  load_map.c \
-	  render.c \
-	  render_map.c \
-	  render_player.c \
+	  file_io.c \
 	  handle_input.c \
+	  init_game.c \
 	  key_hooks.c \
-	  mouse_hooks.c \
-	  errors.c \
-	  memory.c \
-	  helpers.c 
+	  parse_map.c \
+	  render_map.c\
+	  valid_path.c \
 # Add the source directory prefix to source files
 SRCS = $(addprefix $(SRCDIR)/, $(SRC))
 
@@ -56,13 +35,11 @@ OBJS = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
 .PHONY: all clean fclean re
 
 # Default rule
-all: $(MLX_LIB) $(LIBFT_LIB) $(NAME)
+all: $(LIBFT_LIB) $(NAME)
 
 # Rule to build executable program
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(MLX_FLAGS) -o $(NAME) 
-
-#Link object files to create the executable
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft $(MLX_FLAGS) -o $(NAME)
 
 # Ensure the object directory exists
 $(OBJDIR):
@@ -70,23 +47,19 @@ $(OBJDIR):
 
 # Rule for compiling source files into object files
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
-	$(CC) $(CFLAGS) -c $< -o $@ $< $(INCLUDES)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Build MiniLibX library
-$(MLX_LIB):
-	make -C $(MLX_DIR)
 # Build Libft library
 $(LIBFT_LIB):
 	make -C $(LIBFT_DIR)
+
 # Clean up object files
 clean:
 	rm -f $(OBJS)
-	make -C $(MLX_DIR) clean
 	make -C $(LIBFT_DIR) clean
 # Full clean (removes executable as well)
 fclean: clean
 	rm -f $(NAME)
-	make -C $(MLX_DIR) fclean
 	make -C $(LIBFT_DIR) fclean
 # Rule for re-making the project from scratch
 

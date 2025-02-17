@@ -13,7 +13,6 @@
 #include "so_long.h"
 #include <fcntl.h>
 
-
 #define MAP_BUFFER_SIZE 1024
 
 int	ft_arg_check(int argc, char **argv)
@@ -31,7 +30,7 @@ int	ft_arg_check(int argc, char **argv)
 		write(2, "Error\nFilename too short\n", 25);
 		return (0);
 	}
-	if (ft_strcmp(argv[1] + len - 4, ".ber") != 0)
+	if (ft_strncmp(argv[1] + len - 4, ".ber", 4) != 0)
 	{
 		write(2, "Error\nInvalid file extension. Only .ber files allowed\n", 54);
 		return (0);
@@ -52,12 +51,13 @@ static char	*ft_append_to_map(char *map_data, char *buffer)
 // Opens the file and validates the file descriptor.
 static int	ft_open_valid_file(char *map_file)
 {
-	int	fd;
+	int		fd;
+	char	dummy;
 
 	fd = open(map_file, O_RDONLY);
 	if (fd < 0)
 		return (-1);
-	if (read(fd, 0, 0) < 0)
+	if (read(fd, &dummy, 0) < 0)
 	{
 		close(fd);
 		return (-1);
@@ -87,7 +87,6 @@ static char	*ft_read_file_to_string(int fd)
 	return (map_data);
 }
 
-
 // Orchestrator: Opens, reads, and closes the file, returning the map string.
 char	*ft_read_map(const char *map_file)
 {
@@ -101,4 +100,3 @@ char	*ft_read_map(const char *map_file)
 	close(fd);
 	return (map_data);
 }
-

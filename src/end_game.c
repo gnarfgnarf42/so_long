@@ -52,7 +52,7 @@ int	ft_close_game(t_game *game)
 	return (0);
 }
 
-void	ft_error_exit(char *msg, t_game *game)
+void	ft_error_exit(const char *msg, t_game *game)
 {
 	write(2, "Error\n", 6);
 	write(2, msg, ft_strlen(msg));
@@ -62,4 +62,19 @@ void	ft_error_exit(char *msg, t_game *game)
 	if (game->window)
 		mlx_destroy_window(game->mlx, game->window);
 	exit(1);
+}
+
+const char	*ft_map_error_to_string(t_map_error error)
+{
+	if (error == MAP_ERR_RECTANGULAR)
+		return ("The Map is not rectangular.");
+	else if (error == MAP_ERR_CLOSED)
+		return ("The Map is not closed.");
+	else if (error == MAP_ERR_INVALID_ENTITIES)
+		return ("Not exactly one starting position and one exit.");
+	else if (error == MAP_ERR_NO_COLLECTIBLE)
+		return ("The Map has no collectibles.");
+	else if (error == MAP_ERR_NO_VALID_PATH)
+		return ("The Map has no valid path.");
+	return ("Unknown map error.");
 }

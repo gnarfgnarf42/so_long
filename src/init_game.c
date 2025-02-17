@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_game.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sscholz <sscholz@student.42berlin.de>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/17 14:59:42 by sscholz           #+#    #+#             */
+/*   Updated: 2025/02/17 14:59:48 by sscholz          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
 void	ft_init_window(t_game *game)
@@ -5,11 +17,11 @@ void	ft_init_window(t_game *game)
 	game->mlx = mlx_init();
 	if (!game->mlx)
 		ft_error_exit("Error initializing MLX", game);
-	game->win = mlx_new_window(game->mlx,
-			game->map->width * TILE_SIZE,
-			game->map->height * TILE_SIZE,
+	game->window = mlx_new_window(game->mlx,
+			game->map.width * TILE_SIZE,
+			game->map.height * TILE_SIZE,
 			"so_long");
-	if (!game->win)
+	if (!game->window)
 		ft_error_exit("Error creating window", game);
 }
 
@@ -36,14 +48,26 @@ void	ft_init_images(t_game *game)
 		"Failed to load background image");
 }
 
-
 void	ft_init_map(t_game *game, char *map_file)
 {
-	game->map = ft_read_map(map_file);
-	if (!game->map)
-		ft_error_exit("Failed to parse map", game);
-	if (!ft_validate_map(game->map))
-		ft_error_exit("Invalid map", game);
+	t_map_error	err;
+	char		*raw_data;
+	t_map		*temp_map;
+
+	raw_data = ft_read_map(map_file);
+	if (!raw_data)
+		ft_error_exit("Failed to read map file", game);
+	temp_map = ft_parse_map_data(raw_data);
+	free(raw_data);
+	if (!temp_map)
+		ft_error_exit("Failed to parse map data", game);
+	game->map = *temp_map;
+	free(temp_map);
+	err = ft_validate_map(&game->map);
+	if (err != MAP_OK)
+		ft_error_exit(ft_map_error_to_string(err), game);
+	if (!ft_valid_path(&game->map))
+		ft_error_exit("The Map has no valid path.", game);
 }
 
 void	ft_init_player(t_game *game)
@@ -52,16 +76,16 @@ void	ft_init_player(t_game *game)
 	int	y;
 
 	y = 0;
-	while (y < game->map->height)
+	while (y < game->map.height)
 	{
 		x = 0;
-		while (x < game->map->width)
+		while (x < game->map.width)
 		{
-			if (game->map->grid[y][x] == 'P')
+			if (game->map.grid[y][x] == 'P')
 			{
 				game->player.x = x;
 				game->player.y = y;
-				game->map->grid[y][x] = '0'; // Replace 'P' with empty space
+				game->map.grid[y][x] = '0';
 				return ;
 			}
 			x++;

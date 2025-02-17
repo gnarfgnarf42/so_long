@@ -24,16 +24,16 @@ void	ft_render_map(t_game *game)
 	int	y;
 
 	y = 0;
-	while (y < game->map->height)
+	while (y < game->map.height)
 	{
 		x = 0;
-		while (x < game->map->width)
+		while (x < game->map.width)
 		{
-			if (game->map->grid[y][x] == '1')
+			if (game->map.grid[y][x] == '1')
 				ft_draw_tile(game, game->wall.img, x, y);
-			else if (game->map->grid[y][x] == 'C')
+			else if (game->map.grid[y][x] == 'C')
 				ft_draw_tile(game, game->collectible.img, x, y);
-			else if (game->map->grid[y][x] == 'E')
+			else if (game->map.grid[y][x] == 'E')
 				ft_draw_tile(game, game->exit.img, x, y);
 			else
 				ft_draw_tile(game, game->background.img, x, y);

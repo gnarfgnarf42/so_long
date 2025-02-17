@@ -71,7 +71,6 @@ static t_point	ft_find_player(t_map *map)
 	return (p);
 }
 
-
 // Checks for remaining 'C' or 'E' characters in the grid.
 // Returns 1 if none remain (all are reachable), 0 otherwise.
 static int	ft_check_remaining(char **cp, int height, int width)
@@ -110,8 +109,7 @@ static void	ft_free_copy_grid(char **cp, int height)
 	free(cp);
 }
 
-// Main valid_path function that uses the above helpers.
-static int	valid_path(t_map *m)
+int	ft_valid_path(t_map *m)
 {
 	char	**cp;
 	t_map	temp;
@@ -125,14 +123,13 @@ static int	valid_path(t_map *m)
 	temp.height = m->height;
 	temp.width = m->width;
 	p = ft_find_player(&temp);
-	if (p.x == -1)
+	if (p.x == -1 || p.y == -1)
 		valid = 0;
 	else
 	{
-		ft_flood_fill(cp, p.x, p.y, m->height, m->width);
+		ft_flood_fill(&temp, p.x, p.y);
 		valid = ft_check_remaining(cp, m->height, m->width);
 	}
 	ft_free_copy_grid(cp, m->height);
 	return (valid);
 }
-

@@ -21,11 +21,11 @@
 
 # define TILE_SIZE 64
 
-# define KEY_UP 126
-# define KEY_DOWN 125
-# define KEY_LEFT 123
-# define KEY_RIGHT 124
-# define KEY_ESC 53
+# define KEY_UP 119
+# define KEY_LEFT 97
+# define KEY_DOWN 115
+# define KEY_RIGHT 100
+# define KEY_ESC 65307
 
 typedef struct s_point {
 	int		x;
@@ -40,37 +40,81 @@ typedef struct s_image
 
 typedef struct s_player
 {
-	int		x;	   // Player's current x position on the map
-	int		y;	   // Player's current y position on the map
-	int		moves; // Total moves made by the player
+	int		x;
+	int		y;
+	int		moves;
 }	t_player;
 
 typedef struct s_map
 {
-	char	**grid;	  // 2D array representing the map layout
-	int		width;		  // Map width (number of columns)
-	int		height;		  // Map height (number of rows)
-	int		collectibles; // Count of collectibles to be picked
+	char	**grid;
+	int		width;
+	int		height;
+	int		collectibles;
 }	t_map;
 
 typedef struct s_game
 {
-	void *mlx;			 // Pointer to the MiniLibX instance
-	void *window;		 // Pointer to the game window
-	t_map map;			 // Struct holding map data
-	t_player player;	 // Struct holding player data
-	t_image wall;		 // Image struct for wall texture
-	t_image collectible; // Image struct for collectible texture
-	t_image exit;		 // Image struct for exit texture
-	t_image player_img;	 // Image struct for player texture
-	t_image background;	 // Image struct for background texture
+	void		*mlx;
+	void		*window;
+	t_map		map;
+	t_player	player;
+	t_image		wall;
+	t_image		collectible;
+	t_image		exit;
+	t_image		player_img;
+	t_image		background;
 }	t_game;
 
-t_game	*init_game(char *map_file);
-void	init_window(t_game *game);
-void	init_player(t_game *game);
-void	init_map(t_game *game, char *map_file);
-void	init_images(t_game *game);
-void	init_window(t_game *game);
+typedef enum e_map_error
+{
+	MAP_OK = 0,
+	MAP_ERR_RECTANGULAR,
+	MAP_ERR_CLOSED,
+	MAP_ERR_INVALID_ENTITIES,
+	MAP_ERR_NO_COLLECTIBLE,
+	MAP_ERR_NO_VALID_PATH
+}	t_map_error;
+
+//so_long.c
+int			main(int argc, char **argv);
+int			ft_init_game(t_game *game, char *map_file);
+void		ft_flood_fill(t_map *m, int x, int y);
+
+//end_game.c
+int			ft_close_game(t_game *game);
+void		ft_error_exit(const char *msg, t_game *game);
+const char	*ft_map_error_to_string(t_map_error error);
+
+//file_io.c
+int			ft_arg_check(int argc, char **argv);
+char		*ft_read_map(const char *map_file);
+
+//handle_input.c
+void		ft_compute_new_position(int keycode, t_game *game,
+				int *new_x, int *new_y);
+int			ft_is_valid_move(t_game *game, int new_x, int new_y);
+void		ft_handle_collectible(t_game *game, int new_x, int new_y);
+int			ft_handle_exit(t_game *game, int new_x, int new_y);
+void		ft_update_player_position(t_game *game, int new_x, int new_y);
+
+//init_game.c
+void		ft_init_window(t_game *game);
+void		ft_init_images(t_game *game);
+void		ft_init_map(t_game *game, char *map_file);
+void		ft_init_player(t_game *game);
+
+//key_hooks.c
+int			ft_key_press(int keycode, t_game *game);
+
+//parse_map.c
+t_map		*ft_parse_map_data(char *raw_data);
+int			ft_validate_map(t_map *m);
+
+//render_map.c
+void		ft_render_map(t_game *game);
+
+//valid_path.c
+int			ft_valid_path(t_map *m);
 
 #endif
